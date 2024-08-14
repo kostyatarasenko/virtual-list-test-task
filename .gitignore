@@ -24,3 +24,7 @@ yarn-error.log*
 
 # IDE folders
 .idea
+
+# ENV files
+.env.development
+.env.production
