@@ -29,6 +29,9 @@ const useCustomInfiniteQuery = ({
       }
     },
     initialPageParam: 1,
+    select: (data) => {
+      return data.pages.flatMap(page => page.results);
+    },
   });
 };
 

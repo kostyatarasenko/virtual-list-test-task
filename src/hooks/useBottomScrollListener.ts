@@ -1,17 +1,34 @@
-import { useEffect } from 'react';
+import { useEffect, RefObject } from 'react';
 
-const useBottomScrollListener = (onBottom: () => void, offset: number = 0) => {
+const useBottomScrollListener = (
+  onBottom: () => void,
+  offset: number = 0,
+  ref?: RefObject<HTMLElement>
+) => {
   const handleScroll = () => {
-    const isAtBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - offset;
+    let isAtBottom = false;
+
+    if (!ref) {
+      isAtBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - offset;
+    } else if (ref.current) {
+      const element = ref.current;
+      isAtBottom = element.scrollHeight - element.scrollTop <= element.clientHeight + offset;
+    }
+
     if (isAtBottom) {
       onBottom();
     }
   };
 
   useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
+    const target = ref?.current || window;
 
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [handleScroll]);
+    target.addEventListener('scroll', handleScroll);
+
+    return () => {
+      target.removeEventListener('scroll', handleScroll);
+    };
+  }, [ref, offset, onBottom]);
 };
+
 export default useBottomScrollListener;
