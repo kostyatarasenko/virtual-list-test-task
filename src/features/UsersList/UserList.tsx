@@ -19,7 +19,7 @@ const UserList = () => {
     if (hasNextPage && !isFetchingNextPage) {
       await fetchNextPage();
     }
-  }, 0, userListRef);
+  }, 100, userListRef);
 
   const rowVirtualizer = useVirtualizer({
     count: data?.length ?? 0,
