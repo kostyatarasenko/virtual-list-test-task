@@ -1,7 +1,7 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 
-import { useCustomInfiniteQuery, useBottomScrollListener } from '../../hooks';
+import { useCustomInfiniteQuery, useInfiniteScrollTrigger } from '../../hooks';
 
 const UserList = () => {
   const userListRef = useRef(null);
@@ -15,12 +15,6 @@ const UserList = () => {
     status,
   } = useCustomInfiniteQuery({ queryKey: ['users'] });
 
-  useBottomScrollListener(async () => {
-    if (hasNextPage && !isFetchingNextPage) {
-      await fetchNextPage();
-    }
-  }, 100, userListRef);
-
   const rowVirtualizer = useVirtualizer({
     count: data?.length ?? 0,
     getScrollElement: () => userListRef.current,
@@ -28,6 +22,16 @@ const UserList = () => {
   });
 
   const items = rowVirtualizer.getVirtualItems();
+
+  useInfiniteScrollTrigger({
+    virtualItems: items,
+    data,
+    onReachEnd: async () => {
+      if (hasNextPage && !isFetchingNextPage) {
+        await fetchNextPage();
+      }
+    },
+  });
 
   if (status === 'pending') return <p>Loading...</p>;
   if (status === 'error') return <p>Error: {error.message}</p>;
