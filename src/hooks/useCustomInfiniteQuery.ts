@@ -2,7 +2,7 @@ import { QueryKey, useInfiniteQuery } from '@tanstack/react-query';
 
 import { getJson } from '../api';
 
-interface UseCustomInfiniteQueryProps {
+type UseCustomInfiniteQueryProps = {
   queryKey: QueryKey;
   limit?: number;
   resultsPerPage?: number;
