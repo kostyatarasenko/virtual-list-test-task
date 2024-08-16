@@ -3,9 +3,9 @@ import { APIParams } from './types';
 
 const getJson = async (url: string, params?: APIParams): Promise<Response> => {
   const headers = buildHeaders(params, { body: false });
-  const queryStringParams = new URLSearchParams(params as Record<string, string>).toString();
+  const payloadParams = new URLSearchParams(params as Record<string, string>).toString();
 
-  return fetch(getApiEndpoint(url, queryStringParams), {
+  return fetch(getApiEndpoint(`${url}?${payloadParams}`), {
     method: 'GET',
     headers,
   });

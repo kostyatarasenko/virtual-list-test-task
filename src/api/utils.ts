@@ -1,8 +1,8 @@
 import { API_ENDPOINT } from './constants';
 import { APIOptions, APIParams } from './types';
 
-const getApiEndpoint = (url: string, queryStringParams?: string) => {
-  return queryStringParams ? `${API_ENDPOINT}${url}?${queryStringParams}` : `${API_ENDPOINT}${url}`;
+const getApiEndpoint = (url: string) => {
+  return `${API_ENDPOINT}${url}`;
 };
 
 const buildHeaders = (params: APIParams = {}, options: APIOptions = {}): HeadersInit => {

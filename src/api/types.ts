@@ -1,9 +1,12 @@
-export type APIParams = {
-  token?: string;
-  [key: string]: string | number | boolean | undefined;
+type URLParamValue = string | number | boolean;
+type HeaderParamValue = string;
+
+export interface APIParams {
+  token?: HeaderParamValue;
+  [key: string]: URLParamValue | undefined;
 }
 
-export type APIOptions = {
+export interface APIOptions {
   body?: boolean;
-  [key: string]: boolean | string | undefined;
+  [key: string]: boolean | HeaderParamValue | undefined;
 }
