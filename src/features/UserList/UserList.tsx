@@ -64,54 +64,31 @@ const UserList = () => {
       itemIdKey={userIdKey}
       onDragEnd={handleDragEnd}
     >
-      <div
-        ref={virtualizerWrapperRef}
-        style={{
-          height: '100vh',
-          width: '100vw',
-          overflowY: 'auto',
-          contain: 'strict',
+      <VirtualList
+        items={sortedUsers}
+        estimatedItemSize={estimatedUserCardHeightPx}
+        onReachEnd={handleFetchNextPage}
+        renderVirtualItem={(virtualRow) => {
+          const user = sortedUsers[virtualRow.index];
+
+          const ordinalNumber = getUserRealIndex(data, sortedUsers, virtualRow.index) + 1;
+
+          const { title, first, last} = user.name;
+          const userFullName = concatenateStrings('№', ordinalNumber, title, first, last);
+
+          return (
+            <SortableItem
+              key={virtualRow.key}
+              id={user.email}
+            >
+              <Card
+                text={userFullName}
+              />
+            </SortableItem>
+          );
         }}
-      >
-        <div
-          style={{
-            height: userCardItemTotalSizePx,
-            position: 'relative',
-            width: '100%',
-          }}
-        >
-          <div
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              transform: `translateY(${virtualUserCardItems[0]?.start ?? 0}px)`,
-            }}
-          >
-            {virtualUserCardItems.map((virtualRow) => {
-              const user = sortedUsers[virtualRow.index];
-
-              const ordinalNumber = getUserRealIndex(data, sortedUsers, virtualRow.index) + 1;
-
-              const { title, first, last} = user.name;
-              const userFullName = concatenateStrings('№', ordinalNumber, title, first, last);
-
-              return (
-                <SortableItem
-                  key={virtualRow.key}
-                  id={user.email}
-                >
-                  <Card
-                    text={userFullName}
-                  />
-                </SortableItem>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-    </SortableList>
+      />
+    </SortableContextProvider>
   );
 };
 
