@@ -1,11 +1,18 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 
+import { User } from '../../types';
 import { useCustomInfiniteQuery, useInfiniteScrollTrigger } from '../../hooks';
-import { Card } from '../../views';
+import { Card, SortableItem, SortableList } from '../../views';
+import { mergeSortedArray, concatenateStrings } from '../../utils';
+import { getUserItemRealIndex } from '../../domains/users';
+
+const estimatedUserCardHeightPx = 114;
 
 const UserList = () => {
-  const userListRef = useRef(null);
+  const [sortedUsers, setSortedUsers] = useState<User[]>([]);
+
+  const userListRef = useRef<HTMLDivElement>(null);
 
   const {
     data,
@@ -16,73 +23,93 @@ const UserList = () => {
     status,
   } = useCustomInfiniteQuery({ queryKey: ['users'] });
 
-  const rowVirtualizer = useVirtualizer({
-    count: data?.length ?? 0,
+  const {
+    getVirtualItems,
+    getTotalSize,
+  } = useVirtualizer({
+    count: sortedUsers.length,
     getScrollElement: () => userListRef.current,
-    estimateSize: () => 114,
+    estimateSize: () => estimatedUserCardHeightPx,
   });
 
-  const items = rowVirtualizer.getVirtualItems();
+  useEffect(() => {
+    if (data) {
+      setSortedUsers((prevState) => mergeSortedArray<User>(data, prevState, 'email'));
+    }
+  }, [data]);
+
+  const virtualUserCardItems = getVirtualItems();
+  const userCardItemTotalSizePx = getTotalSize();
+
+  const handleFetchNextPage = async () => {
+    if (hasNextPage && !isFetchingNextPage) {
+      await fetchNextPage();
+    }
+  }
 
   useInfiniteScrollTrigger({
-    virtualItems: items,
+    virtualItems: virtualUserCardItems,
     data,
-    onReachEnd: async () => {
-      if (hasNextPage && !isFetchingNextPage) {
-        await fetchNextPage();
-      }
-    },
+    onReachEnd: handleFetchNextPage,
   });
 
   if (status === 'pending') return <p>Loading...</p>;
   if (status === 'error') return <p>Error: {error.message}</p>;
 
   return (
-    <div
-      ref={userListRef}
-      style={{
-        height: '100vh',
-        width: '100vw',
-        overflowY: 'auto',
-        contain: 'strict',
-      }}
+    <SortableList
+      items={sortedUsers}
+      itemIdKey="email"
+      setItems={setSortedUsers}
     >
       <div
+        ref={userListRef}
         style={{
-          height: rowVirtualizer.getTotalSize(),
-          position: 'relative',
-          width: '100%',
+          height: '100vh',
+          width: '100vw',
+          overflowY: 'auto',
+          contain: 'strict',
         }}
       >
-
         <div
           style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
+            height: userCardItemTotalSizePx,
+            position: 'relative',
             width: '100%',
-            transform: `translateY(${items[0]?.start ?? 0}px)`,
           }}
         >
-          {items.map((virtualRow) => {
-            const { title, first, last } = data[virtualRow.index].name;
-            const userFullName = `№ ${virtualRow.index} ${title} ${first} ${last}`;
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              transform: `translateY(${virtualUserCardItems[0]?.start ?? 0}px)`,
+            }}
+          >
+            {virtualUserCardItems.map((virtualRow) => {
+              const user = sortedUsers[virtualRow.index];
 
-            return (
-              <div
-                key={virtualRow.key}
-                data-index={virtualRow.index}
-                ref={rowVirtualizer.measureElement}
-              >
-                <Card
-                  text={userFullName}
-                />
-              </div>
-            )
-          })}
+              const ordinalNumber = getUserItemRealIndex(data, sortedUsers, virtualRow.index) + 1;
+
+              const { title, first, last} = user.name;
+              const userFullName = concatenateStrings('№', ordinalNumber, title, first, last);
+
+              return (
+                <SortableItem
+                  key={virtualRow.key}
+                  id={user.email}
+                >
+                  <Card
+                    text={userFullName}
+                  />
+                </SortableItem>
+              )
+            })}
+          </div>
         </div>
       </div>
-    </div>
+    </SortableList>
   );
 }
 
