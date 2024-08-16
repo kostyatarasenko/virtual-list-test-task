@@ -1,7 +1,8 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 
 import { useCustomInfiniteQuery, useInfiniteScrollTrigger } from '../../hooks';
+import { Card } from '../../views';
 
 const UserList = () => {
   const userListRef = useRef(null);
@@ -18,7 +19,7 @@ const UserList = () => {
   const rowVirtualizer = useVirtualizer({
     count: data?.length ?? 0,
     getScrollElement: () => userListRef.current,
-    estimateSize: () => 76,
+    estimateSize: () => 114,
   });
 
   const items = rowVirtualizer.getVirtualItems();
@@ -63,19 +64,22 @@ const UserList = () => {
             transform: `translateY(${items[0]?.start ?? 0}px)`,
           }}
         >
-          {items.map((virtualRow) => (
-            <div
-              key={virtualRow.key}
-              data-index={virtualRow.index}
-              ref={rowVirtualizer.measureElement}
-            >
-              <div style={{padding: '10px 0'}}>
-                <div>{data[virtualRow.index].name.title}</div>
-                <div>{data[virtualRow.index].name.first}</div>
-                <div>{data[virtualRow.index].name.last}</div>
+          {items.map((virtualRow) => {
+            const { title, first, last } = data[virtualRow.index].name;
+            const userFullName = `№ ${virtualRow.index} ${title} ${first} ${last}`;
+
+            return (
+              <div
+                key={virtualRow.key}
+                data-index={virtualRow.index}
+                ref={rowVirtualizer.measureElement}
+              >
+                <Card
+                  text={userFullName}
+                />
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </div>
     </div>
