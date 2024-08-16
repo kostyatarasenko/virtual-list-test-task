@@ -45,6 +45,7 @@ export default [
       "no-plusplus": "off",
       "max-len": ["warn", { code: 120 }],
       "no-underscore-dangle": "off",
+      "semi": ["error", "always"],
     },
   },
 ];
