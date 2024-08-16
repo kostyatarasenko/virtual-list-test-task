@@ -1,5 +1,5 @@
 import { API_ENDPOINT } from './constants';
-import { APIOptions, APIParams } from './interfaces';
+import { APIOptions, APIParams } from './types';
 
 const getApiEndpoint = (url: string, queryStringParams?: string) => {
   return queryStringParams ? `${API_ENDPOINT}${url}?${queryStringParams}` : `${API_ENDPOINT}${url}`;

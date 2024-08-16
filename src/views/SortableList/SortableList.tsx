@@ -1,16 +1,16 @@
-import React, { ReactNode, useMemo, FC } from 'react';
+import React, { ReactNode, useMemo } from 'react';
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
-import { get as _get } from'lodash';
+import { get as _get } from 'lodash';
 
-type SortableListProps = {
-  items: any[];
+type SortableListProps<T> = {
+  items: T[];
   children: ReactNode;
   itemIdKey: string;
-  setItems: React.Dispatch<React.SetStateAction<any[]>>;
+  setItems: React.Dispatch<React.SetStateAction<T[]>>;
 };
 
-const SortableList: FC<SortableListProps> = ({ items, children, itemIdKey, setItems }) => {
+const SortableList = <T,>({ items, children, itemIdKey, setItems }: SortableListProps<T>) => {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -34,7 +34,7 @@ const SortableList: FC<SortableListProps> = ({ items, children, itemIdKey, setIt
   };
 
   const sortedItemIds = useMemo(
-    () => items.map((item: number) => _get(item, itemIdKey)),
+    () => items.map((item) => _get(item, itemIdKey) as string | number),
     [items, itemIdKey],
   );
 
