@@ -9,7 +9,7 @@ const getJson = async (url: string, params?: APIParams): Promise<Response> => {
     method: 'GET',
     headers,
   });
-}
+};
 
 const patchJson = async <T>(url: string, json: T, params?: APIParams): Promise<Response> => {
   const headers = buildHeaders(params, { body: true });
@@ -19,7 +19,7 @@ const patchJson = async <T>(url: string, json: T, params?: APIParams): Promise<R
     body: JSON.stringify(json),
     headers,
   });
-}
+};
 
 const putJson = async <T>(url: string, json: T, params?: APIParams): Promise<Response> => {
   const headers = buildHeaders(params, { body: true });
@@ -29,7 +29,7 @@ const putJson = async <T>(url: string, json: T, params?: APIParams): Promise<Res
     body: JSON.stringify(json),
     headers,
   });
-}
+};
 
 const postJson = async <T>(url: string, json: T, params?: APIParams): Promise<Response> => {
   const headers = buildHeaders(params, { body: true });
@@ -39,7 +39,7 @@ const postJson = async <T>(url: string, json: T, params?: APIParams): Promise<Re
     body: JSON.stringify(json),
     headers,
   });
-}
+};
 
 const deleteJson = async (url: string, params?: APIParams): Promise<Response> => {
   const headers = buildHeaders(params);
@@ -48,7 +48,7 @@ const deleteJson = async (url: string, params?: APIParams): Promise<Response> =>
     method: 'DELETE',
     headers,
   });
-}
+};
 
 export {
   getJson,

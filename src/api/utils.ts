@@ -3,7 +3,7 @@ import { APIOptions, APIParams } from './types';
 
 const getApiEndpoint = (url: string, queryStringParams?: string) => {
   return queryStringParams ? `${API_ENDPOINT}${url}?${queryStringParams}` : `${API_ENDPOINT}${url}`;
-}
+};
 
 const buildHeaders = (params: APIParams = {}, options: APIOptions = {}): HeadersInit => {
   const headers: HeadersInit = {};
@@ -18,7 +18,7 @@ const buildHeaders = (params: APIParams = {}, options: APIOptions = {}): Headers
   }
 
   return headers;
-}
+};
 
 export {
   getApiEndpoint,

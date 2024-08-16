@@ -45,7 +45,7 @@ const UserList = () => {
     if (hasNextPage && !isFetchingNextPage) {
       await fetchNextPage();
     }
-  }
+  };
 
   useInfiniteScrollTrigger<User>({
     virtualItems: virtualUserCardItems,
@@ -104,13 +104,13 @@ const UserList = () => {
                     text={userFullName}
                   />
                 </SortableItem>
-              )
+              );
             })}
           </div>
         </div>
       </div>
     </SortableList>
   );
-}
+};
 
 export default UserList;
