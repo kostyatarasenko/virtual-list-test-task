@@ -1,15 +1,19 @@
 import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 
-import UserList from './features/UsersList';
+import UserList from './features/UserList';
 import './App.css';
 
 const queryClient = new QueryClient();
+const theme = createTheme();
 
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <UserList />
+      <ThemeProvider theme={theme}>
+        <UserList />
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }
