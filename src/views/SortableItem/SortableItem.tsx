@@ -1,4 +1,4 @@
-import React, { ReactNode, FC } from 'react';
+import React, { ReactNode } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
@@ -7,7 +7,7 @@ type SortableItemProps = {
   children: ReactNode;
 };
 
-const SortableItem: FC<SortableItemProps> = ({ id, children }) => {
+const SortableItem = ({ id, children }: SortableItemProps) => {
   const {
     attributes,
     listeners,

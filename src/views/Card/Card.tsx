@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { Box, Typography } from '@mui/material';
 import { styled } from '@mui/system';
 
@@ -13,11 +13,11 @@ const StyledBox = styled(Box)({
   backgroundColor: '#fff',
 });
 
-interface CardProps {
+type CardProps = {
   text: string;
 }
 
-const Card: FC<CardProps> = ({ text }) => {
+const Card = ({ text }: CardProps) => {
   return (
     <StyledBox>
       <Typography variant="body1">{text}</Typography>
