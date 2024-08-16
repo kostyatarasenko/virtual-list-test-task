@@ -1,8 +1,8 @@
 import { findIndex as _findIndex } from 'lodash';
 
-import { User } from '../../types';
+import { User } from './types';
 
-const getUserItemRealIndex = (
+const getUserRealIndex = (
   realData: User[],
   sortedUsers: User[],
   virtualIndex: number,
@@ -11,5 +11,5 @@ const getUserItemRealIndex = (
 };
 
 export {
-  getUserItemRealIndex,
+  getUserRealIndex,
 };

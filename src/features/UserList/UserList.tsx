@@ -1,18 +1,20 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 
-import { User } from '../../types';
-import { useCustomInfiniteQuery, useInfiniteScrollTrigger } from '../../hooks';
-import { Card, SortableItem, SortableList } from '../../views';
+import { User } from '../../domains/users';
+import { usePaginatedQuery, useInfiniteScrollTrigger } from '../../hooks';
+import { Card, SortableItem, SortableList } from '../../components';
 import { mergeSortedArray, concatenateStrings } from '../../utils';
-import { getUserItemRealIndex } from '../../domains/users';
+import { getUserRealIndex } from '../../domains/users';
+import { AVAILABLE_ROUTES } from '../../constants';
 
 const estimatedUserCardHeightPx = 114;
+const userIdKey = 'email';
 
 const UserList = () => {
   const [sortedUsers, setSortedUsers] = useState<User[]>([]);
 
-  const userListRef = useRef<HTMLDivElement>(null);
+  const virtualizerWrapperRef = useRef<HTMLDivElement>(null);
 
   const {
     data,
@@ -21,20 +23,23 @@ const UserList = () => {
     hasNextPage,
     isFetchingNextPage,
     status,
-  } = useCustomInfiniteQuery({ queryKey: ['users'] });
+  } = usePaginatedQuery({
+    queryKey: ['users'],
+    route: AVAILABLE_ROUTES.GET_USERS,
+  });
 
   const {
     getVirtualItems,
     getTotalSize,
   } = useVirtualizer({
     count: sortedUsers.length,
-    getScrollElement: () => userListRef.current,
+    getScrollElement: () => virtualizerWrapperRef.current,
     estimateSize: () => estimatedUserCardHeightPx,
   });
 
   useEffect(() => {
     if (data) {
-      setSortedUsers((prevState) => mergeSortedArray<User>(data, prevState, 'email'));
+      setSortedUsers((prevState) => mergeSortedArray<User>(data, prevState, userIdKey));
     }
   }, [data]);
 
@@ -59,11 +64,11 @@ const UserList = () => {
   return (
     <SortableList
       items={sortedUsers}
-      itemIdKey="email"
+      itemIdKey={userIdKey}
       setItems={setSortedUsers}
     >
       <div
-        ref={userListRef}
+        ref={virtualizerWrapperRef}
         style={{
           height: '100vh',
           width: '100vw',
@@ -90,7 +95,7 @@ const UserList = () => {
             {virtualUserCardItems.map((virtualRow) => {
               const user = sortedUsers[virtualRow.index];
 
-              const ordinalNumber = getUserItemRealIndex(data, sortedUsers, virtualRow.index) + 1;
+              const ordinalNumber = getUserRealIndex(data, sortedUsers, virtualRow.index) + 1;
 
               const { title, first, last} = user.name;
               const userFullName = concatenateStrings('№', ordinalNumber, title, first, last);

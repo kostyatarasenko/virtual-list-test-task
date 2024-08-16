@@ -1,2 +1,2 @@
-export { default as useCustomInfiniteQuery } from './useCustomInfiniteQuery';
+export { default as usePaginatedQuery } from './usePaginatedQuery';
 export { default as useInfiniteScrollTrigger } from './useInfiniteScrollTrigger';

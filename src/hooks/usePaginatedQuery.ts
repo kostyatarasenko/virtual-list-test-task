@@ -4,17 +4,23 @@ import { getJson } from '../api';
 
 type UseCustomInfiniteQueryProps = {
   queryKey: QueryKey;
+  route: string;
+  params?: Record<string, string | number>;
   limit?: number;
   resultsPerPage?: number;
 }
 
-const useCustomInfiniteQuery = ({
+const usePaginatedQuery = ({
   queryKey,
   limit = 1000,
   resultsPerPage = 30,
+  route,
+  params,
 }: UseCustomInfiniteQueryProps) => {
-  const handleFetchPage = async ({ pageParam = 1 }: { pageParam?: number }) => {
-    const response = await getJson('', { page: pageParam, results: resultsPerPage });
+  const handleFetchPage = async ({ pageParam = 1 }: { pageParam: number }) => {
+    const defaultParams = { page: pageParam, results: resultsPerPage };
+
+    const response = await getJson(route, params || defaultParams);
     return response.json();
   };
 
@@ -35,4 +41,4 @@ const useCustomInfiniteQuery = ({
   });
 };
 
-export default useCustomInfiniteQuery;
+export default usePaginatedQuery;
