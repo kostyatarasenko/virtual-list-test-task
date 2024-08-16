@@ -1,2 +1,2 @@
 export { default as usePaginatedQuery } from './usePaginatedQuery';
-export { default as useInfiniteScrollTrigger } from './useInfiniteScrollTrigger';
+export { default as useVirtualScrollTrigger } from './useVirtualScrollTrigger';

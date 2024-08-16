@@ -1,9 +1,11 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { useVirtualizer } from '@tanstack/react-virtual';
+import React, { useEffect, useState } from 'react';
+import { DragEndEvent } from '@dnd-kit/core';
+import { get as _get } from 'lodash';
+import { arrayMove } from '@dnd-kit/sortable';
 
 import { User } from '../../domains/users';
-import { usePaginatedQuery, useInfiniteScrollTrigger } from '../../hooks';
-import { Card, SortableItem, SortableList } from '../../components';
+import { usePaginatedQuery } from '../../hooks';
+import { Card, SortableItem, SortableContextProvider, VirtualList } from '../../components';
 import { mergeSortedArray, concatenateStrings } from '../../utils';
 import { getUserRealIndex } from '../../domains/users';
 import { AVAILABLE_ROUTES } from '../../constants';
@@ -13,8 +15,6 @@ const userIdKey = 'email';
 
 const UserList = () => {
   const [sortedUsers, setSortedUsers] = useState<User[]>([]);
-
-  const virtualizerWrapperRef = useRef<HTMLDivElement>(null);
 
   const {
     data,
@@ -28,23 +28,11 @@ const UserList = () => {
     route: AVAILABLE_ROUTES.GET_USERS,
   });
 
-  const {
-    getVirtualItems,
-    getTotalSize,
-  } = useVirtualizer({
-    count: sortedUsers.length,
-    getScrollElement: () => virtualizerWrapperRef.current,
-    estimateSize: () => estimatedUserCardHeightPx,
-  });
-
   useEffect(() => {
     if (data) {
       setSortedUsers((prevState) => mergeSortedArray<User>(data, prevState, userIdKey));
     }
   }, [data]);
-
-  const virtualUserCardItems = getVirtualItems();
-  const userCardItemTotalSizePx = getTotalSize();
 
   const handleFetchNextPage = async () => {
     if (hasNextPage && !isFetchingNextPage) {
@@ -52,20 +40,29 @@ const UserList = () => {
     }
   };
 
-  useInfiniteScrollTrigger<User>({
-    virtualItems: virtualUserCardItems,
-    data,
-    onReachEnd: handleFetchNextPage,
-  });
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (!over) return;
+
+    if (active.id !== over.id) {
+      setSortedUsers((items) => {
+        const oldIndex = items.findIndex(item => _get(item, userIdKey) === active.id);
+        const newIndex = items.findIndex(item => _get(item, userIdKey) === over.id);
+
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
+  };
 
   if (status === 'pending') return <p>Loading...</p>;
   if (status === 'error') return <p>Error: {error.message}</p>;
 
   return (
-    <SortableList
+    <SortableContextProvider
       items={sortedUsers}
       itemIdKey={userIdKey}
-      setItems={setSortedUsers}
+      onDragEnd={handleDragEnd}
     >
       <div
         ref={virtualizerWrapperRef}
