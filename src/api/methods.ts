@@ -1,5 +1,5 @@
 import { getApiEndpoint, buildHeaders } from './utils';
-import { APIParams } from './interfaces';
+import { APIParams } from './types';
 
 const getJson = async (url: string, params?: APIParams): Promise<Response> => {
   const headers = buildHeaders(params, { body: false });
@@ -11,7 +11,7 @@ const getJson = async (url: string, params?: APIParams): Promise<Response> => {
   });
 }
 
-const patchJson = async (url: string, json: any, params?: APIParams): Promise<Response> => {
+const patchJson = async <T>(url: string, json: T, params?: APIParams): Promise<Response> => {
   const headers = buildHeaders(params, { body: true });
 
   return fetch(getApiEndpoint(url), {
@@ -21,7 +21,7 @@ const patchJson = async (url: string, json: any, params?: APIParams): Promise<Re
   });
 }
 
-const putJson = async (url: string,  json: any, params?: APIParams): Promise<Response> => {
+const putJson = async <T>(url: string, json: T, params?: APIParams): Promise<Response> => {
   const headers = buildHeaders(params, { body: true });
 
   return fetch(getApiEndpoint(url), {
@@ -31,7 +31,7 @@ const putJson = async (url: string,  json: any, params?: APIParams): Promise<Res
   });
 }
 
-const postJson = async (url: string, json: any, params?: APIParams): Promise<Response> => {
+const postJson = async <T>(url: string, json: T, params?: APIParams): Promise<Response> => {
   const headers = buildHeaders(params, { body: true });
 
   return fetch(getApiEndpoint(url), {

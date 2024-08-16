@@ -1,5 +1,6 @@
 import globals from 'globals';
 import pluginJs from '@eslint/js';
+// eslint-disable-next-line import/no-unresolved
 import tseslint from 'typescript-eslint';
 import pluginReact from 'eslint-plugin-react';
 import importPlugin from 'eslint-plugin-import';
@@ -13,6 +14,13 @@ export default [
   {
     plugins: {
       import: importPlugin,
+    },
+    settings: {
+      "import/resolver": {
+        node: {
+          extensions: [".js", ".jsx", ".ts", ".tsx"],
+        },
+      },
     },
     rules: {
       "import/no-unresolved": "error",

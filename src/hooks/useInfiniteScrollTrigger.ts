@@ -2,17 +2,17 @@ import { useEffect } from 'react';
 import { last as _last } from 'lodash';
 import { VirtualItem } from '@tanstack/react-virtual';
 
-interface UseInfiniteScrollTriggerProps {
+type UseInfiniteScrollTriggerProps<T> = {
   virtualItems: VirtualItem<HTMLDivElement>[];
-  data?: any[];
+  data?: T[];
   onReachEnd?: () => void;
 }
 
-const useInfiniteScrollTrigger = ({
+const useInfiniteScrollTrigger = <T>({
   virtualItems,
   data,
   onReachEnd,
-}: UseInfiniteScrollTriggerProps) => {
+}: UseInfiniteScrollTriggerProps<T>) => {
   useEffect(() => {
     const lastItem = _last(virtualItems);
 

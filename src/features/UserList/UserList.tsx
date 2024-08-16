@@ -47,7 +47,7 @@ const UserList = () => {
     }
   }
 
-  useInfiniteScrollTrigger({
+  useInfiniteScrollTrigger<User>({
     virtualItems: virtualUserCardItems,
     data,
     onReachEnd: handleFetchNextPage,
