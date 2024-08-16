@@ -1,3 +1,4 @@
+// This Model could be not accurate, check the API docs for more details
 export type User = {
   gender: string;
   name: {
