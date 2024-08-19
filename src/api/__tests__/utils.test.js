@@ -1,5 +1,4 @@
 import { buildHeaders } from '../utils';
-import { APIParams, APIOptions } from '../types';
 
 describe('buildHeaders', () => {
   it('should return default headers when no params and options are provided', () => {
@@ -8,7 +7,7 @@ describe('buildHeaders', () => {
   });
 
   it('should include Content-Type and cache-control headers when options.body is true', () => {
-    const options: APIOptions = { body: true };
+    const options = { body: true };
     const result = buildHeaders({}, options);
 
     expect(result).toEqual({
@@ -18,7 +17,7 @@ describe('buildHeaders', () => {
   });
 
   it('should include Authorization header when token is provided in params', () => {
-    const params: APIParams = { token: 'abc123' };
+    const params = { token: 'abc123' };
     const result = buildHeaders(params);
 
     expect(result).toEqual({
@@ -27,8 +26,8 @@ describe('buildHeaders', () => {
   });
 
   it('should include both body headers and Authorization header when both are provided', () => {
-    const params: APIParams = { token: 'abc123' };
-    const options: APIOptions = { body: true };
+    const params = { token: 'abc123' };
+    const options = { body: true };
     const result = buildHeaders(params, options);
 
     expect(result).toEqual({

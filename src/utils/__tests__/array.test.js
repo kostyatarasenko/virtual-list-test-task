@@ -31,7 +31,7 @@ describe('mergeSortedArray', () => {
       { id: 3, value: 'three' },
     ];
 
-    const sortedPart: { id: number; value: string }[] = [];
+    const sortedPart = [];
 
     const result = mergeSortedArray(originalArray, sortedPart, 'id');
 
@@ -39,7 +39,7 @@ describe('mergeSortedArray', () => {
   });
 
   it('should return only sortedPart if originalArray is empty', () => {
-    const originalArray: { id: number; value: string }[] = [];
+    const originalArray = [];
 
     const sortedPart = [
       { id: 1, value: 'one' },
