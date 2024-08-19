@@ -1,11 +1,6 @@
-export interface URLParams {
-  page?: number,
-  results?: number,
-}
-
-export interface HeaderParams {
+export type HeaderParams = {
   token?: string;
   body?: string;
 }
 
-export interface RequestParams extends URLParams, HeaderParams {}
+export type RequestParams = Record<string, any>;

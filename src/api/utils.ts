@@ -1,15 +1,11 @@
 import { API_ENDPOINT } from './constants';
-import {RequestParams, URLParams} from './types';
+import { HeaderParams, RequestParams } from './types';
 
 const getApiEndpoint = (url: string) => {
   return `${API_ENDPOINT}${url}`;
 };
 
-type BuildHeadersOptions = {
-  body: boolean;
-};
-
-const buildHeaders = (params?: RequestParams, options?: BuildHeadersOptions): HeadersInit => {
+const buildHeaders = (options?: HeaderParams): HeadersInit => {
   const headers: HeadersInit = {};
 
   if (options?.body) {
@@ -17,8 +13,8 @@ const buildHeaders = (params?: RequestParams, options?: BuildHeadersOptions): He
     headers['cache-control'] = 'no-cache';
   }
 
-  if (params?.token) {
-    headers.Authorization = `${params.token}`;
+  if (options?.token) {
+    headers.Authorization = `${options.token}`;
   }
 
   return headers;
@@ -28,10 +24,10 @@ const buildURLSearchParams = (params?: RequestParams): string => {
   return new URLSearchParams(
     Object.entries(params || {}).reduce((acc, [key, value]) => {
       if (value !== undefined) {
-        acc[key as keyof URLParams] = String(value);
+        acc[key] = String(value);
       }
       return acc;
-    }, {} as Record<keyof URLParams, string>)
+    }, {} as Record<string, string>),
   ).toString();
 };
 
