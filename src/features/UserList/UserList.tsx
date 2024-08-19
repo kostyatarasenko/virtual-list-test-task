@@ -47,11 +47,11 @@ const UserList = () => {
     if (!over) return;
 
     if (active.id !== over.id) {
-      setSortedUsers((items) => {
-        const oldIndex = items.findIndex(item => _get(item, USER_ID_KEY) === active.id);
-        const newIndex = items.findIndex(item => _get(item, USER_ID_KEY) === over.id);
+      setSortedUsers((prevState) => {
+        const oldIndex = prevState.findIndex(item => _get(item, USER_ID_KEY) === active.id);
+        const newIndex = prevState.findIndex(item => _get(item, USER_ID_KEY) === over.id);
 
-        return arrayMove(items, oldIndex, newIndex);
+        return arrayMove(prevState, oldIndex, newIndex);
       });
     }
   };
