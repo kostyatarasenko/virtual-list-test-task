@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, memo } from 'react';
 import { DragEndEvent } from '@dnd-kit/core';
 import { get as _get } from 'lodash';
 import { arrayMove } from '@dnd-kit/sortable';
+import { VirtualItem } from '@tanstack/react-virtual';
 
 import { User, getUserRealIndex } from '../../domains/users';
 import { usePaginatedQuery } from '../../hooks';
@@ -55,6 +56,31 @@ const UserList = () => {
     }
   };
 
+  // TODO: Move this component into new file
+  const RenderVirtualUserItem = memo(({
+    virtualRow,
+    sortedUsers,
+    data,
+  }: { virtualRow: VirtualItem<HTMLDivElement>, sortedUsers: User[], data: User[] }) => {
+    const user = sortedUsers[virtualRow.index];
+
+    const ordinalNumber = getUserRealIndex(data, sortedUsers, virtualRow.index) + 1;
+
+    const { title, first, last} = user.name;
+    const userFullName = concatenateStrings('№', ordinalNumber, title, first, last);
+
+    return (
+      <SortableItem
+        key={virtualRow.key}
+        id={user.email}
+      >
+        <Card
+          text={userFullName}
+        />
+      </SortableItem>
+    );
+  });
+
   if (status === 'pending') return <p>Loading...</p>;
   if (status === 'error') return <p>Error: {error.message}</p>;
 
@@ -68,25 +94,14 @@ const UserList = () => {
         items={sortedUsers}
         estimatedItemSize={ESTIMATED_USER_CARD_HEIGHT_PX}
         onReachEnd={handleFetchNextPage}
-        renderVirtualItem={(virtualRow) => {
-          const user = sortedUsers[virtualRow.index];
-
-          const ordinalNumber = getUserRealIndex(data, sortedUsers, virtualRow.index) + 1;
-
-          const { title, first, last} = user.name;
-          const userFullName = concatenateStrings('№', ordinalNumber, title, first, last);
-
-          return (
-            <SortableItem
-              key={virtualRow.key}
-              id={user.email}
-            >
-              <Card
-                text={userFullName}
-              />
-            </SortableItem>
-          );
-        }}
+        renderVirtualItem={(virtualRow) => (
+          <RenderVirtualUserItem
+            key={virtualRow.key}
+            virtualRow={virtualRow}
+            sortedUsers={sortedUsers}
+            data={data}
+          />
+        )}
       />
     </SortableContextProvider>
   );
