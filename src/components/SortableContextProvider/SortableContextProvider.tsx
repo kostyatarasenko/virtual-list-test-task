@@ -3,19 +3,19 @@ import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, DragEn
 import { SortableContext, verticalListSortingStrategy, horizontalListSortingStrategy } from '@dnd-kit/sortable';
 import { get as _get } from 'lodash';
 
-import { Direction } from '../../constants';
+import { Direction as DirectionEnum } from '../../constants';
 
 type SortableListProps<T> = {
   items: T[];
   children: ReactNode;
   itemIdKey: string;
   onDragEnd?: (event: DragEndEvent) => void;
-  direction?: Direction;
+  direction?: DirectionEnum;
 };
 
 const directionsMap = {
-  [Direction.Vertical]: verticalListSortingStrategy,
-  [Direction.Horizontal]: horizontalListSortingStrategy,
+  [DirectionEnum.Vertical]: verticalListSortingStrategy,
+  [DirectionEnum.Horizontal]: horizontalListSortingStrategy,
 };
 
 const SortableContextProvider = <T,>({
@@ -23,7 +23,7 @@ const SortableContextProvider = <T,>({
   children,
   itemIdKey,
   onDragEnd,
-  direction = Direction.Vertical,
+  direction = DirectionEnum.Vertical,
 }: SortableListProps<T>) => {
   const sensors = useSensors(
     useSensor(PointerSensor, {
