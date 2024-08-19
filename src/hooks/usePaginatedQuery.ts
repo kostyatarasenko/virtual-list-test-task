@@ -2,7 +2,7 @@ import { useInfiniteQuery, QueryFunctionContext } from '@tanstack/react-query';
 
 import api, { RequestParams } from '../api';
 
-interface UseCustomInfiniteQueryProps {
+interface UsePaginatedQueryProps {
   queryKey: string[];
   route: string;
   limit?: number;
@@ -22,7 +22,7 @@ const usePaginatedQuery = <T>({
   resultsPerPage = 30,
   route,
   params,
-}: UseCustomInfiniteQueryProps) => {
+}: UsePaginatedQueryProps) => {
   const handleFetchPage = async ({ pageParam = 1 }: QueryFunctionContext): Promise<FetchItemsResponse<T>> => {
     const defaultParams = { page: pageParam, results: resultsPerPage };
 
@@ -44,6 +44,7 @@ const usePaginatedQuery = <T>({
     select: (data) => {
       return data.pages.flatMap(page => page.results);
     },
+    refetchOnWindowFocus: false,
   });
 };
 
