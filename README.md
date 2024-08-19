@@ -12,6 +12,11 @@ This project was built in 4 hours approx.
 - Some linter errors could appear due to unfinished configuration of eslint
 - Some parts of the code could be enhanced by providing better types
 
+## Known bugs:
+- Weird UI jumps on dropping element
+- Holding element and scrolling up or down more than 30 elements causing dissapearing
+- Switching between tabs causing setting indexes of elements to 0
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
