@@ -1,6 +1,6 @@
 import { QueryKey, useInfiniteQuery } from '@tanstack/react-query';
 
-import { getJson } from '../api';
+import api from '../api';
 
 type UseCustomInfiniteQueryProps = {
   queryKey: QueryKey;
@@ -20,7 +20,7 @@ const usePaginatedQuery = ({
   const handleFetchPage = async ({ pageParam = 1 }: { pageParam: number }) => {
     const defaultParams = { page: pageParam, results: resultsPerPage };
 
-    const response = await getJson(route, params || defaultParams);
+    const response = await api.get(route, params || defaultParams);
     return response.json();
   };
 
