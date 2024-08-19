@@ -5,11 +5,22 @@
 - virtualize list (do not to render 1000 records at once) by using https://tanstack.com/virtual/latest or similar tool
 - add ability to change positions of items in list by drag and dropping (example: https://master--5fc05e08a4a65d0021ae0bf2.chromatic.com/?path=/story/presets-sortable-vertical--basic-setup)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Important note:
+This project was built in 4 hours approx.
+
+- Some parts of code are not covered by tests 
+- Some linter errors could appear due to unfinished configuration of eslint
+- Some parts of the code could be enhanced by providing better types
 
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+# Installation
+
+- `npm i`
+- Copy `.env.example` to `.env.development`
+- Enjoy!
 
 ## Available Scripts
 
