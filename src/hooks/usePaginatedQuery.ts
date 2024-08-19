@@ -1,33 +1,39 @@
-import { QueryKey, useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, QueryFunctionContext } from '@tanstack/react-query';
 
-import api from '../api';
+import api, { RequestParams } from '../api';
 
-type UseCustomInfiniteQueryProps = {
-  queryKey: QueryKey;
+interface UseCustomInfiniteQueryProps {
+  queryKey: string[];
   route: string;
-  params?: Record<string, string | number>;
   limit?: number;
   resultsPerPage?: number;
+  params?: RequestParams;
 }
 
-const usePaginatedQuery = ({
+// Typical response from the API for paginated requests
+interface FetchItemsResponse<T> {
+  results: T[];
+  nextPage?: number;
+}
+
+const usePaginatedQuery = <T>({
   queryKey,
   limit = 1000,
   resultsPerPage = 30,
   route,
   params,
 }: UseCustomInfiniteQueryProps) => {
-  const handleFetchPage = async ({ pageParam = 1 }: { pageParam: number }) => {
+  const handleFetchPage = async ({ pageParam = 1 }: QueryFunctionContext): Promise<FetchItemsResponse<T>> => {
     const defaultParams = { page: pageParam, results: resultsPerPage };
 
     const response = await api.get(route, params || defaultParams);
     return response.json();
   };
 
-  return useInfiniteQuery({
+  return useInfiniteQuery<FetchItemsResponse<T>, Error, T[]>({
     queryKey,
     queryFn: handleFetchPage,
-    getNextPageParam: (lastPage, pages) => {
+    getNextPageParam: (_lastPage, pages) => {
       if (pages.length * resultsPerPage < limit) {
         return pages.length + 1;
       } else {

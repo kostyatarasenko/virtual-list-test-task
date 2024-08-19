@@ -3,15 +3,15 @@ import { DragEndEvent } from '@dnd-kit/core';
 import { get as _get } from 'lodash';
 import { arrayMove } from '@dnd-kit/sortable';
 
-import { User } from '../../domains/users';
+import { User, getUserRealIndex } from '../../domains/users';
 import { usePaginatedQuery } from '../../hooks';
 import { Card, SortableItem, SortableContextProvider, VirtualList } from '../../components';
 import { mergeSortedArray, concatenateStrings } from '../../utils';
-import { getUserRealIndex } from '../../domains/users';
 import { AVAILABLE_ROUTES } from '../../constants';
 
-const estimatedUserCardHeightPx = 114;
-const userIdKey = 'email';
+const ESTIMATED_USER_CARD_HEIGHT_PX = 114;
+// Backend could respond user with no id value, so we need to use email as a key
+const USER_ID_KEY = 'email';
 
 const UserList = () => {
   const [sortedUsers, setSortedUsers] = useState<User[]>([]);
@@ -23,14 +23,14 @@ const UserList = () => {
     hasNextPage,
     isFetchingNextPage,
     status,
-  } = usePaginatedQuery({
+  } = usePaginatedQuery<User>({
     queryKey: ['users'],
     route: AVAILABLE_ROUTES.GET_USERS,
   });
 
   useEffect(() => {
     if (data) {
-      setSortedUsers((prevState) => mergeSortedArray<User>(data, prevState, userIdKey));
+      setSortedUsers((prevState) => mergeSortedArray<User>(data, prevState, USER_ID_KEY));
     }
   }, [data]);
 
@@ -47,8 +47,8 @@ const UserList = () => {
 
     if (active.id !== over.id) {
       setSortedUsers((items) => {
-        const oldIndex = items.findIndex(item => _get(item, userIdKey) === active.id);
-        const newIndex = items.findIndex(item => _get(item, userIdKey) === over.id);
+        const oldIndex = items.findIndex(item => _get(item, USER_ID_KEY) === active.id);
+        const newIndex = items.findIndex(item => _get(item, USER_ID_KEY) === over.id);
 
         return arrayMove(items, oldIndex, newIndex);
       });
@@ -61,12 +61,12 @@ const UserList = () => {
   return (
     <SortableContextProvider
       items={sortedUsers}
-      itemIdKey={userIdKey}
+      itemIdKey={USER_ID_KEY}
       onDragEnd={handleDragEnd}
     >
       <VirtualList
         items={sortedUsers}
-        estimatedItemSize={estimatedUserCardHeightPx}
+        estimatedItemSize={ESTIMATED_USER_CARD_HEIGHT_PX}
         onReachEnd={handleFetchNextPage}
         renderVirtualItem={(virtualRow) => {
           const user = sortedUsers[virtualRow.index];
