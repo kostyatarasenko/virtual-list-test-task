@@ -14,7 +14,6 @@ This project was built in 4 hours approx.
 
 ## Known bugs:
 - Holding element and scrolling up or down more than 30 elements causing dissapearing
-- Switching between tabs causing setting indexes of elements to 0
 
 # Getting Started with Create React App
 
